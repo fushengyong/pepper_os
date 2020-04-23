@@ -13,7 +13,7 @@ if [ ${#last_desktop_url} -le 20 ];\
     last_desktop_url=`curl -s -L $release_url | grep -m 1 "Next" | cut -d '"' -f8`; \
     echo "Release: $last_desktop_url"; \
 else echo "Release found on first page"; fi; \
-curl -s -L $last_desktop_url | grep download/release | cut -d '"' -f2 | xargs -n 1 printf "https://github.com%s\n" | xargs -n 1 curl -O -L -s 
+curl -s -L $last_desktop_url | grep download/release | cut -d '"' -f2 | xargs -n 1 printf "https://github.com%s\n" | xargs -n 1 curl -O -L
 # &&\
 RUN ls -lah &&\
     cat gentoo_on_tmp* > gentoo_on_tmp.tar.lzma &&\
