@@ -9,15 +9,17 @@ RUN release_url="https://github.com/awesomebytes/ros_overlay_on_gentoo_prefix_32
 last_desktop_url=`curl -s -L $release_url | grep -m 1 "ROS Kinetic desktop" | cut -d '"' -f2 | xargs -n 1 printf "http://github.com%s\n"`; \
 # Check if the url is empty, if so we try the next page
 if [ ${#last_desktop_url} -le 20 ];\
-then echo "Trying to find release on next page.";\
-last_desktop_url=`curl -s -L $release_url | grep -m 1 "Next" | cut -d '"' -f8`; \
-echo "Release: $last_desktop_url"; \
+    then echo "Trying to find release on next page.";\
+    last_desktop_url=`curl -s -L $release_url | grep -m 1 "Next" | cut -d '"' -f8`; \
+    echo "Release: $last_desktop_url"; \
 else echo "Release found on first page"; fi; \
-curl -s -L $last_desktop_url | grep download/release | cut -d '"' -f2 | xargs -n 1 printf "https://github.com%s\n" | xargs -n 1 curl -O -L -s &&\
+curl -s -L $last_desktop_url | grep download/release | cut -d '"' -f2 | xargs -n 1 printf "https://github.com%s\n" | xargs -n 1 curl -O -L -s 
+# &&\
+RUN ls -lah &&\
     cat gentoo_on_tmp* > gentoo_on_tmp.tar.lzma &&\
     rm gentoo_on_tmp*.part* &&\
     tar xf gentoo_on_tmp.tar.lzma &&\
-rm gentoo_on_tmp.tar.lzma
+    rm gentoo_on_tmp.tar.lzma
 
 # Fix permissions of tmp
 USER root
