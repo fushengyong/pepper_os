@@ -11,10 +11,10 @@ jobs:
     steps:
     - script: docker system prune -a -f
       displayName: 'clear disk space'
-    # As we run into HD space problems and we have 7GB RAM available
-    - script: echo "none /dev/shm tmpfs defaults,size=3G 0 0" | sudo tee -a /etc/fstab; sudo mount -o remount /dev/shm; df -h
-      displayName: 'Modify /etc/fstab to extend /dev/shm to be 3GB'
-    - script: docker build --network host -f Dockerfile -t $(DockerHub_user)/$(docker_image_name):$(Build.BuildId) .
+    # As we run into HD space problems and we have 7GB RAM available tell Docker to have /dev/shm as 3GB==3221225472 bytes
+    # - script: echo "none /dev/shm tmpfs defaults,size=3G 0 0" | sudo tee -a /etc/fstab; sudo mount -o remount /dev/shm; df -h
+    #   displayName: 'Modify /etc/fstab to extend /dev/shm to be 3GB'
+    - script: docker build --network host --shm-size 3221225472 -f Dockerfile -t $(DockerHub_user)/$(docker_image_name):$(Build.BuildId) .
       displayName: 'docker build'
       # This means up to 6h
       timeoutInMinutes: 0
