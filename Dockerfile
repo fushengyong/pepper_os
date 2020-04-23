@@ -1,7 +1,12 @@
 FROM awesomebytes/pepper_2.5.5.5
 
+# Create RAM-disk to have enough space to download and extract the ros_overlay_on_gentoo_prefix image
+USER root
+RUN mkdir -p /mnt/ramdisk && mount -t tmpfs -o rw,size=5G tmpfs /mnt/ramdisk
+
 USER nao
-WORKDIR /home/nao
+WORKDIR /mnt/ramdisk
+#WORKDIR /home/nao
 
 RUN cat /proc/cpuinfo; cat /proc/meminfo; df -h
 RUN release_url="https://github.com/awesomebytes/ros_overlay_on_gentoo_prefix_32b/releases";  echo "Release url: $release_url"; \
@@ -15,16 +20,22 @@ if [ ${#last_desktop_url} -le 20 ];\
 else echo "Release found on first page"; fi; \
 curl -s -L $last_desktop_url | grep download/release | cut -d '"' -f2 | xargs -n 1 printf "https://github.com%s\n" | xargs -n 1 curl -O -L
 # &&\
-RUN ls -lah &&\
-    cat gentoo_on_tmp* > gentoo_on_tmp.tar.lzma &&\
-    rm gentoo_on_tmp*.part* &&\
-    tar xf gentoo_on_tmp.tar.lzma &&\
-    rm gentoo_on_tmp.tar.lzma
+# RUN ls -lah &&\
+#     cat gentoo_on_tmp* > gentoo_on_tmp.tar.lzma &&\
+#     rm gentoo_on_tmp*.part* &&\
+#     tar xf gentoo_on_tmp.tar.lzma &&\
+#     rm gentoo_on_tmp.tar.lzma
+# One step smart version. I actually don't know why I didn't do this before
+RUN cat /mnt/ramdisk/gentoo_on_tmp* | tar xf - &&\
+    rm /mnt/ramdisk/gentoo_on_tmp*
 
 # Fix permissions of tmp
 USER root
 RUN chmod a=rwx,o+t /tmp
+# Undo the RAMdisk
+RUN umount /mnt/ramdisk
 USER nao
+WORKDIR /home/nao
 
 
 # Prepare environment to run everything in the prefixed shell
