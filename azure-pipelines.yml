@@ -11,6 +11,9 @@ jobs:
     steps:
     - script: docker system prune -a -f
       displayName: 'clear disk space'
+    # As we run into HD space problems and we have 7GB RAM available
+    - script: sudo mkdir /mnt/ramdisk && sudo mount -t tmpfs -o rw,size=3G tmpfs /mnt/ramdisk
+      displayName: 'create RAM disk for download'
     - script: docker build --network host -f Dockerfile -t $(DockerHub_user)/$(docker_image_name):$(Build.BuildId) .
       displayName: 'docker build'
       # This means up to 6h

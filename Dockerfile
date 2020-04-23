@@ -1,10 +1,7 @@
 FROM awesomebytes/pepper_2.5.5.5
 
-# Create RAM-disk to have enough space to download and extract the ros_overlay_on_gentoo_prefix image
-USER root
-RUN mkdir -p /mnt/ramdisk && mount -t tmpfs -o rw,size=5G tmpfs /mnt/ramdisk
-
 USER nao
+RUN ls -lah /mnt
 WORKDIR /mnt/ramdisk
 #WORKDIR /home/nao
 
@@ -26,14 +23,12 @@ curl -s -L $last_desktop_url | grep download/release | cut -d '"' -f2 | xargs -n
 #     tar xf gentoo_on_tmp.tar.lzma &&\
 #     rm gentoo_on_tmp.tar.lzma
 # One step smart version. I actually don't know why I didn't do this before
-RUN cat /mnt/ramdisk/gentoo_on_tmp* | tar xf - &&\
+RUN cd /home/nao; cat /mnt/ramdisk/gentoo_on_tmp* | tar xf - &&\
     rm /mnt/ramdisk/gentoo_on_tmp*
 
 # Fix permissions of tmp
 USER root
 RUN chmod a=rwx,o+t /tmp
-# Undo the RAMdisk
-RUN umount /mnt/ramdisk
 USER nao
 WORKDIR /home/nao
 
