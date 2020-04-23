@@ -18,7 +18,7 @@ RUN release_url="https://github.com/awesomebytes/ros_overlay_on_gentoo_prefix_32
     done; \
     echo "Latest release found in url: $last_desktop_url";\
     curl -s -L $last_desktop_url | grep download/release | cut -d '"' -f2 | xargs -n 1 printf "https://github.com%s\n" | xargs -n 1 curl -O -L -s &&\
-    cat gentoo_on_tmp* | tar xf - &&\
+    cat gentoo_on_tmp* | tar --extract --lzma --file - &&\
     rm gentoo_on_tmp*
 
 # Fix permissions of tmp
