@@ -1,8 +1,7 @@
 FROM awesomebytes/pepper_2.5.5.5
 
 USER nao
-RUN ls -lah /mnt
-WORKDIR /mnt/ramdisk
+WORKDIR /dev/shm
 #WORKDIR /home/nao
 
 RUN cat /proc/cpuinfo; cat /proc/meminfo; df -h
@@ -23,8 +22,8 @@ curl -s -L $last_desktop_url | grep download/release | cut -d '"' -f2 | xargs -n
 #     tar xf gentoo_on_tmp.tar.lzma &&\
 #     rm gentoo_on_tmp.tar.lzma
 # One step smart version. I actually don't know why I didn't do this before
-RUN cd /home/nao; cat /mnt/ramdisk/gentoo_on_tmp* | tar xf - &&\
-    rm /mnt/ramdisk/gentoo_on_tmp*
+RUN cd /home/nao; cat /dev/shm/gentoo_on_tmp* | tar xf - &&\
+    rm /dev/shm/gentoo_on_tmp*
 
 # Fix permissions of tmp
 USER root
