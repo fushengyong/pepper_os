@@ -12,8 +12,8 @@ jobs:
     - script: docker system prune -a -f
       displayName: 'clear disk space'
     # As we run into HD space problems and we have 7GB RAM available
-    - script: sudo cat /etc/fstab
-      displayName: 'Check /etc/fstab'
+    - script: echo "none /dev/shm tmpfs defaults,size=3G 0 0" | sudo tee -a /etc/fstab; sudo mount -o remount /dev/shm; df -h
+      displayName: 'Modify /etc/fstab'
     - script: cat nothing
       displayName: 'just crash'
     - script: docker build --network host -f Dockerfile -t $(DockerHub_user)/$(docker_image_name):$(Build.BuildId) .
